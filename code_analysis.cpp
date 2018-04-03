@@ -10,7 +10,7 @@
 
 #include <string>
 
-/** Generate source analysis based on the request
+/** puGenerate source analysis based on the request
  * @param request Data that forms the request
  * @retval true   Valid request
  * @retval false  Invalid filename or unable to deduce language
@@ -33,8 +33,10 @@ bool code_analysis(const analysis_request& request) {
  * @retval filename
  */
 std::string analysis_filename(const analysis_request& request) {
-
-    return "";
+    if(request.option_filename!="")
+    return request.option_filename;
+    else
+        return "";
 }
 
 /** URL extracted from the request
