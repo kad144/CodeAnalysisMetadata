@@ -27,7 +27,7 @@ int main() {
         assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
-	//The filename can be given explicitly as the option_filename
+	//tset if The filename can be given explicitly as the option_filename
  	{
         analysis_request request;
         request.given_filename  = "";
@@ -43,7 +43,7 @@ int main() {
         assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
-
+    //test if it use the entry_filename for source code archive
     {
         analysis_request request;
         request.given_filename  = "";
@@ -59,7 +59,7 @@ int main() {
         assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
-
+    //test if a regular file the entry_filename is “data” if it use the given_filename
      {
         analysis_request request;
         request.given_filename  = "main.cpp";
@@ -72,6 +72,22 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == request.given_filename);
         assert(analysis_url(request) == "");
+        assert(analysis_language(request, filename) == "");
+        assert(code_analysis(request) == false);
+    }
+
+    {
+        analysis_request request;
+        request.given_filename  = "";
+        request.entry_filename  = "";
+        request.given_url       = "";
+        request.option_filename = "";
+        request.option_url      = "www.FB.com";
+        request.option_language = "";
+
+        auto filename = analysis_filename(request);
+        assert(filename == "");
+        assert(analysis_url(request) == request.option_url);
         assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
