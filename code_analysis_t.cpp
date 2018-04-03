@@ -107,7 +107,7 @@ int main() {
         assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
-
+    //test if the language can be explicitly given as option_language
     {
         analysis_request request;
         request.given_filename  = "";
@@ -115,7 +115,7 @@ int main() {
         request.given_url       = "";
         request.option_filename = "";
         request.option_url      = "";
-        request.option_language = "main.cpp";
+        request.option_language = "c++";
 
         auto filename = analysis_filename(request);
         assert(filename == "");
