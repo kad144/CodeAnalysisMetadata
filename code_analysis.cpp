@@ -61,6 +61,8 @@ if(request.option_url=="")
  * @retval language
  */
 std::string analysis_language(const analysis_request& request, const std::string& filename) {
+    if(request.option_language!="")
+        return request.option_language;
 
     return "";
 }
