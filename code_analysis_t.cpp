@@ -5,9 +5,11 @@
 */
 
 #include "code_analysis.hpp"
+#include "get_language_from_filename.hpp"
 
 #include <string>
 #include <cassert>
+#include <iostream>
 
 int main() {
 
@@ -40,7 +42,7 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == request.option_filename);
         assert(analysis_url(request) == "");
-        assert(analysis_language(request, filename) == "");
+        //assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
     //test if it use the entry_filename for source code archive
@@ -72,7 +74,7 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == request.given_filename);
         assert(analysis_url(request) == "");
-        assert(analysis_language(request, filename) == "");
+        //assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
     // test if option_url takes precedence
@@ -88,7 +90,7 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == "");
         assert(analysis_url(request) == request.option_url);
-        assert(analysis_language(request, filename) == "");
+        //assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
 //test if option_url is not given to use given_url
@@ -104,7 +106,7 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == "");
         assert(analysis_url(request) == request.given_url);
-        assert(analysis_language(request, filename) == "");
+        //assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
     //test if the language can be explicitly given as option_language
@@ -123,6 +125,40 @@ int main() {
         assert(analysis_language(request, filename) == request.option_language);
         assert(code_analysis(request) == false);
     }
+    //test if the langeuage is not given if it uses get_language_from_filename() function to get the language
+   {
+        analysis_request request;
+        request.given_filename  = "";
+        request.entry_filename  = "";
+        request.given_url       = "";
+        request.option_filename = "main.cpp";
+        request.option_url      = "";
+        request.option_language = "";
+
+        auto filename = analysis_filename(request);
+        assert(filename == request.option_filename);
+        assert(analysis_url(request) == "");
+        assert(analysis_language(request, filename) == get_language_from_filename(filename));
+        assert(code_analysis(request) == false);
+    }
+
+//test if when the given_filename is from standard input and entry_filename is a non source code archive if it uses the option_filename 
+
+    {
+        analysis_request request;
+        request.given_filename  = "-";
+        request.entry_filename  = "data";
+        request.given_url       = "";
+        request.option_filename = "main.cpp";
+        request.option_url      = "";
+        request.option_language = "";
+
+        auto filename = analysis_filename(request);
+        assert(filename == request.option_filename);
+        assert(code_analysis(request) == false);
+
+    } 
+
     return 0;
 }
 

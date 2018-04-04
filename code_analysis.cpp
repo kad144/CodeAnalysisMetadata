@@ -63,6 +63,8 @@ if(request.option_url=="")
 std::string analysis_language(const analysis_request& request, const std::string& filename) {
     if(request.option_language!="")
         return request.option_language;
+    else
+        return get_language_from_filename(filename);
 
-    return "";
+   return "";
 }
