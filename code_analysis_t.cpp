@@ -43,7 +43,7 @@ int main() {
         assert(filename == request.option_filename);
         assert(analysis_url(request) == "");
         
-        //assert(code_analysis(request) == false);
+        
     }
     //test if it use the entry_filename for source code archive
     {
@@ -59,7 +59,7 @@ int main() {
         assert(filename == request.entry_filename);
         assert(analysis_url(request) == "");
         assert(analysis_language(request, filename) == "");
-        assert(code_analysis(request) == false);
+        
     }
     //test if a regular file the entry_filename is “data” if it use the given_filename
      {
@@ -74,7 +74,7 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == request.given_filename);
         assert(analysis_url(request) == "");
-        assert(code_analysis(request) == false);
+        
     }
     // test if option_url takes precedence
     {
@@ -89,7 +89,7 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == "");
         assert(analysis_url(request) == request.option_url);
-        assert(code_analysis(request) == false);
+        
     }
 //test if option_url is not given to use given_url
     {
@@ -104,7 +104,7 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == "");
         assert(analysis_url(request) == request.given_url);
-        assert(code_analysis(request) == false);
+        
     }
     //test if the language can be explicitly given as option_language
     {
@@ -120,7 +120,7 @@ int main() {
         assert(filename == "");
         assert(analysis_url(request) == "");
         assert(analysis_language(request, filename) == request.option_language);
-        assert(code_analysis(request) == false);
+        
     }
     //test if the langeuage is not given if it uses get_language_from_filename() function to get the language
    {
@@ -136,7 +136,7 @@ int main() {
         assert(filename == request.option_filename);
         assert(analysis_url(request) == "");
         assert(analysis_language(request, filename) == get_language_from_filename(filename));
-        assert(code_analysis(request) == false);
+        
     }
 
 //test if the given_filename is from standard input and entry_filename is a non source code archive if it uses the option_filename 
@@ -152,7 +152,7 @@ int main() {
 
         auto filename = analysis_filename(request);
         assert(filename == request.option_filename);
-        assert(code_analysis(request) == false);
+        
 
     } 
 
@@ -168,7 +168,7 @@ int main() {
 
         auto filename = analysis_filename(request);
         assert(filename == request.entry_filename);
-        assert(code_analysis(request) == false);
+        
 
     }
 //test if the given_filename is from standard input, entry_filename is "data" and option_filename is blank then retruns black.
@@ -185,9 +185,18 @@ int main() {
         assert(filename == "");
         assert(analysis_url(request) == "");
         assert(analysis_language(request, filename) == request.option_language);
-        assert(code_analysis(request) == false);
+       
     }
-    
+
+
+ //test If the file extension is used to determine the language, and there is no mapping for that language, output the error message 
+{
+	analysis_request request;
+	request.option_language = "";
+	assert(code_analysis(request) == false);
+}
+
+
 
     
     return 0;

@@ -26,7 +26,27 @@ bool code_analysis(const analysis_request& request) {
     auto language = analysis_language(request, filename);
 
     
+    std::string errorType1="Extension not supported";
+std::string errorType2="Using stdin requires a declared language";
+    try {
+    
+    if (language=="")
+    {
+        throw errorType1;
+          
+    }
+    if(request.given_filename == "-" && language=="")
+    {
+        throw errorType2;
+    }
+    
+}
+catch (std::string &errorType ) {
+    std::cerr <<errorType<<std::endl;
     return false;
+}
+ 
+ return true;
     
 }
 
