@@ -193,11 +193,17 @@ int main() {
 {
 	analysis_request request;
 	request.option_language = "";
+	request.given_filename  = "";
 	assert(code_analysis(request) == false);
 }
 
-
-
+//test When the input is from standard input and a language cannot be determined, output the error message
+{
+	analysis_request request;
+	request.given_filename = "-";
+	request.option_language = "";
+	assert(code_analysis(request) == false);
+}
     
     return 0;
 }
