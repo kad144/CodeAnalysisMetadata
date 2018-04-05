@@ -42,8 +42,8 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == request.option_filename);
         assert(analysis_url(request) == "");
-        //assert(analysis_language(request, filename) == "");
-        assert(code_analysis(request) == false);
+        
+        //assert(code_analysis(request) == false);
     }
     //test if it use the entry_filename for source code archive
     {
@@ -74,7 +74,6 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == request.given_filename);
         assert(analysis_url(request) == "");
-        //assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
     // test if option_url takes precedence
@@ -90,7 +89,6 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == "");
         assert(analysis_url(request) == request.option_url);
-        //assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
 //test if option_url is not given to use given_url
@@ -106,7 +104,6 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == "");
         assert(analysis_url(request) == request.given_url);
-        //assert(analysis_language(request, filename) == "");
         assert(code_analysis(request) == false);
     }
     //test if the language can be explicitly given as option_language
@@ -159,6 +156,26 @@ int main() {
 
     } 
 
+//test if the given_filename is from standard input and entry_filename is given if return  entry_filename 
+    {
+        analysis_request request;
+        request.given_filename  = "-";
+        request.entry_filename  = "main.cpp";
+        request.given_url       = "";
+        request.option_filename = "";
+        request.option_url      = "";
+        request.option_language = "";
+
+        auto filename = analysis_filename(request);
+        assert(filename == request.entry_filename);
+        assert(code_analysis(request) == false);
+
+    }
+
+    
+
+    
+    //*/
     return 0;
 }
 

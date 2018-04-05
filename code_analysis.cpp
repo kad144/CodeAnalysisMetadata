@@ -10,6 +10,8 @@
 
 #include <string>
 
+#include <iostream>
+
 /** puGenerate source analysis based on the request
  * @param request Data that forms the request
  * @retval true   Valid request
@@ -23,9 +25,9 @@ bool code_analysis(const analysis_request& request) {
 
     auto language = analysis_language(request, filename);
 
-    // code analysis processing that is not yet implemented
-
+    
     return false;
+    
 }
 
 /** Filename extracted from the request
@@ -38,6 +40,12 @@ if(request.option_filename!="")
 if(request.entry_filename == "data")
     return request.given_filename;
 if(request.entry_filename!="")
+    return request.entry_filename;
+if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename != "")
+    return request.option_filename;
+if(request.given_filename  == "-" && request.entry_filename  != "" && request.option_filename == "")
+    return request.entry_filename;
+if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename == "")
     return request.entry_filename;
     else
         return "";
@@ -63,7 +71,7 @@ if(request.option_url=="")
 std::string analysis_language(const analysis_request& request, const std::string& filename) {
     if(request.option_language!="")
         return request.option_language;
-    else
+   if(request.option_language=="")
         return get_language_from_filename(filename);
 
    return "";
