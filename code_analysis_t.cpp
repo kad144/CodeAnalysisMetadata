@@ -204,6 +204,14 @@ int main() {
 	request.option_language = "";
 	assert(code_analysis(request) == false);
 }
+
+//test valid filename retrun true
+{
+	analysis_request request;
+	request.given_filename = "";
+	request.option_language = "main.cpp";
+	assert(code_analysis(request) == true);
+}
     
     return 0;
 }
