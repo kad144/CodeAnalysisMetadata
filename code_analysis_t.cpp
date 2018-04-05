@@ -139,7 +139,7 @@ int main() {
         assert(code_analysis(request) == false);
     }
 
-//test if when the given_filename is from standard input and entry_filename is a non source code archive if it uses the option_filename 
+//test if the given_filename is from standard input and entry_filename is a non source code archive if it uses the option_filename 
 
     {
         analysis_request request;
@@ -171,11 +171,25 @@ int main() {
         assert(code_analysis(request) == false);
 
     }
+//test if the given_filename is from standard input, entry_filename is "data" and option_filename is blank then retruns black.
+{
+        analysis_request request;
+        request.given_filename  = "-";
+        request.entry_filename  = "data";
+        request.given_url       = "";
+        request.option_filename = "";
+        request.option_url      = "";
+        request.option_language = "";
 
+        auto filename = analysis_filename(request);
+        assert(filename == "");
+        assert(analysis_url(request) == "");
+        assert(analysis_language(request, filename) == request.option_language);
+        assert(code_analysis(request) == false);
+    }
     
 
     
-    //*/
     return 0;
 }
 

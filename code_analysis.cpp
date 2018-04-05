@@ -35,6 +35,8 @@ bool code_analysis(const analysis_request& request) {
  * @retval filename
  */
 std::string analysis_filename(const analysis_request& request) {
+if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename == "")
+    return "";
 if(request.option_filename!="")
     return request.option_filename;
 if(request.entry_filename == "data")
@@ -44,8 +46,6 @@ if(request.entry_filename!="")
 if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename != "")
     return request.option_filename;
 if(request.given_filename  == "-" && request.entry_filename  != "" && request.option_filename == "")
-    return request.entry_filename;
-if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename == "")
     return request.entry_filename;
     else
         return "";
