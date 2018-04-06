@@ -26,25 +26,18 @@ bool code_analysis(const analysis_request& request) {
     auto language = analysis_language(request, filename);
 
     
-std::string errorType1="Extension not supported";
-std::string errorType2="Using stdin requires a declared language";
+    std::string errorType1="Extension not supported";
+    std::string errorType2="Using stdin requires a declared language";
     try {
     if(request.given_filename == "-" && language=="")
-    {
         throw errorType2;
-    }   
-    if (language=="")
-    {
-        throw errorType1;
-          
+     if (language=="")
+        throw errorType1;        
     }
-    
-    
-}
-catch (std::string &errorType ) {
-    std::cerr <<errorType<<std::endl;
-    return false;
-}
+    catch (std::string &errorType ) {
+        std::cerr <<errorType<<std::endl;
+        return false;
+    }
  
  return true;
     
@@ -55,18 +48,18 @@ catch (std::string &errorType ) {
  * @retval filename
  */
 std::string analysis_filename(const analysis_request& request) {
-if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename == "")
-    return "";
-if(request.option_filename!="")
-    return request.option_filename;
-if(request.entry_filename == "data")
-    return request.given_filename;
-if(request.entry_filename!="")
-    return request.entry_filename;
-if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename != "")
-    return request.option_filename;
-if(request.given_filename  == "-" && request.entry_filename  != "" && request.option_filename == "")
-    return request.entry_filename;
+    if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename == "")
+        return "";
+    if(request.option_filename!="")
+        return request.option_filename;
+    else if(request.entry_filename == "data")
+        return request.given_filename;
+//else if(request.entry_filename!="")
+    //return request.entry_filename;
+    else if((request.entry_filename!="")||(request.given_filename  == "-" && request.entry_filename  != "" && request.option_filename == ""))
+        return request.entry_filename;
+    else if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename != "")
+        return request.option_filename;
     else
         return "";
 }
