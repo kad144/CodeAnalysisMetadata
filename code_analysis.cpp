@@ -1,5 +1,4 @@
 /*
- kenean dukamo
   @file code_analysis.cpp
 
   Implementation of analysis requests
@@ -54,14 +53,12 @@ std::string analysis_filename(const analysis_request& request) {
         return request.option_filename;
     else if(request.entry_filename == "data")
         return request.given_filename;
-//else if(request.entry_filename!="")
-    //return request.entry_filename;
     else if((request.entry_filename!="")||(request.given_filename  == "-" && request.entry_filename  != "" && request.option_filename == ""))
         return request.entry_filename;
     else if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename != "")
         return request.option_filename;
     else
-        return "";
+return "";
 }
 
 /** URL extracted from the request
@@ -69,11 +66,11 @@ std::string analysis_filename(const analysis_request& request) {
  * @retval URL
  */
 std::string analysis_url(const analysis_request& request) {
-if(request.option_url!="")
-    return request.option_url;
-if(request.option_url=="")
-    return request.given_url;
-    return "";
+    if(request.option_url!="")
+        return request.option_url;
+    if(request.option_url=="")
+        return request.given_url;
+return "";
 }
 
 /** Language extracted from the request and the filename
