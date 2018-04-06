@@ -42,7 +42,8 @@ int main() {
         auto filename = analysis_filename(request);
         assert(filename == request.option_filename);
         assert(analysis_url(request) == "");
-        
+        assert(analysis_language(request, filename) == "C++");
+        assert(code_analysis(request) == true);
         
     }
     //test if it use the entry_filename for source code archive
@@ -205,7 +206,7 @@ int main() {
 	assert(code_analysis(request) == false);
 }
 
-//test valid filename retrun true
+//test if valid filename to return true
 {
 	analysis_request request;
 	request.given_filename = "";
