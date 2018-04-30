@@ -82,76 +82,75 @@
 
 ## Code
 % srcml code_analysis.cpp code_analysis_t.cpp -o project.xml
-% srcml --xpath="//src:function[src:name='code_analysis']" project.xml | srcml | cat -v
+% srcml --xpath="//src:function[src:name='code_analysis']" project.xml | srcml
 
-    bool code_analysis(const analysis_request& request) {
-    
-        auto filename = analysis_filename(request);
-    
-        auto url = analysis_url(request);
-    
-        auto language = analysis_language(request, filename);
-    
-        
-        std::string errorType1="Extension not supported";
-        std::string errorType2="Using stdin requires a declared language";
-        try {
-        if(request.given_filename == "-" && language=="")
-            throw errorType2;
-         if (language=="")
-            throw errorType1;        
-        }
-        catch (std::string &errorType ) {
-            std::cerr <<errorType<<std::endl;
-            return false;
-        }
-     
-     return true;
-        
-    }
+     1 bool code_analysis(const analysis_request& request) {
+     2 
+     3     auto filename = analysis_filename(request);
+     4 
+     5     auto url = analysis_url(request);
+     6 
+     7     auto language = analysis_language(request, filename);
+     8 
+     9     
+    10     std::string errorType1="Extension not supported";
+    11     std::string errorType2="Using stdin requires a declared language";
+    12     try {
+    13     if(request.given_filename == "-" && language=="")
+    14         throw errorType2;
+    15      if (language=="")
+    16         throw errorType1;        
+    17     }
+    18     catch (std::string &errorType ) {
+    19         std::cerr <<errorType<<std::endl;
+    20         return false;
+    21     }
+    22  
+    23  return true;
+    24     
+    25 }
 
-% srcml --xpath="//src:function[src:name='analysis_filename']" project.xml | srcml | cat -v
+% srcml --xpath="//src:function[src:name='analysis_filename']" project.xml | srcml
 
-    std::string analysis_filename(const analysis_request& request) {
-        if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename == "")
-            return "";
-        if(request.option_filename!="")
-            return request.option_filename;
-        else if(request.entry_filename == "data")
-            return request.given_filename;
-        else if((request.entry_filename!="")||(request.given_filename  == "-" && request.entry_filename  != "" && request.option_filename == ""))
-            return request.entry_filename;
-        else if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename != "")
-            return request.option_filename;
-        else
-    return "";
-    }
+     1 std::string analysis_filename(const analysis_request& request) {
+     2     if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename == "")
+     3         return "";
+     4     if(request.option_filename!="")
+     5         return request.option_filename;
+     6     else if(request.entry_filename == "data")
+     7         return request.given_filename;
+     8     else if((request.entry_filename!="")||(request.given_filename  == "-" && request.entry_filename  != "" && request.option_filename == ""))
+     9         return request.entry_filename;
+    10     else if(request.given_filename  == "-" && request.entry_filename  == "data" && request.option_filename != "")
+    11         return request.option_filename;
+    12     else
+    13 return "";
+    14 }
 
-% srcml --xpath="//src:function[src:name='analysis_url']" project.xml | srcml | cat -v
+% srcml --xpath="//src:function[src:name='analysis_url']" project.xml | srcml
 
-    std::string analysis_url(const analysis_request& request) {
-        if(request.option_url!="")
-            return request.option_url;
-        if(request.option_url=="")
-            return request.given_url;
-    return "";
-    }
+     1 std::string analysis_url(const analysis_request& request) {
+     2     if(request.option_url!="")
+     3         return request.option_url;
+     4     if(request.option_url=="")
+     5         return request.given_url;
+     6 return "";
+     7 }
 
-% srcml --xpath="//src:function[src:name='analysis_language']" project.xml | srcml | cat -v
+% srcml --xpath="//src:function[src:name='analysis_language']" project.xml | srcml
 
-    std::string analysis_language(const analysis_request& request, const std::string& filename) {
-        if(request.option_language!="")
-            return request.option_language;
-       if(request.option_language=="")
-            return get_language_from_filename(filename);
-    
-       return "";
-    }
+     1 std::string analysis_language(const analysis_request& request, const std::string& filename) {
+     2     if(request.option_language!="")
+     3         return request.option_language;
+     4    if(request.option_language=="")
+     5         return get_language_from_filename(filename);
+     6 
+     7    return "";
+     8 }
 
 ## Test Cases 
-% srcml code_analysis_t.cpp --xpath="//src:function[src:name='main']/src:block" | srcml | cat -v
+% srcml code_analysis_t.cpp --xpath="//src:function[src:name='main']/src:block" | srcml
 
-sed: RE error: illegal byte sequence
     {
     
         // all parts of the request are empty
@@ -170,8 +169,8 @@ sed: RE error: illegal byte sequence
             assert(analysis_language(request, filename) == "");
             assert(code_analysis(request) == false);
         }
-    	//test if The filename can be given explicitly as the option_filename
-     	{
+        //test if The filename can be given explicitly as the option_filename
+        {
             analysis_request request;
             request.given_filename  = "";
             request.entry_filename  = "";
@@ -187,7 +186,7 @@ sed: RE error: illegal byte sequence
             assert(code_analysis(request) == true);
             
         }
-    	//test if it use the entry_filename for source code archive
+        //test if it use the entry_filename for source code archive
         {
             analysis_request request;
             request.given_filename  = "";
@@ -204,6 +203,201 @@ sed: RE error: illegal byte sequence
             assert(code_analysis(request) == false);
             
         }
+        //test if a regular file the entry_filename is âM-^@M-^\dataâM-^@M-^] if it use the given_filename
+         {
+            analysis_request request;
+            request.given_filename  = "main.cpp";
+            request.entry_filename  = "data";
+            request.given_url       = "";
+            request.option_filename = "";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == request.given_filename);
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == "C++");
+            assert(code_analysis(request) == true);
+        }
+        // test if option_url takes precedence
+        {
+            analysis_request request;
+            request.given_filename  = "";
+            request.entry_filename  = "";
+            request.given_url       = "";
+            request.option_filename = "";
+            request.option_url      = "www.FB.com";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == "");
+            assert(analysis_url(request) == request.option_url);
+            assert(analysis_language(request, filename) == "");
+            assert(code_analysis(request) == false);
+            
+        }
+        //test if option_url is not given to use given_url
+        {
+            analysis_request request;
+            request.given_filename  = "";
+            request.entry_filename  = "";
+            request.given_url       = "www.uakron.edu";
+            request.option_filename = "";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == "");
+            assert(analysis_url(request) == request.given_url);
+            assert(analysis_language(request, filename) == "");
+            assert(code_analysis(request) == false);
+        }
+        //test if the language can be explicitly given as option_language
+        {
+            analysis_request request;
+            request.given_filename  = "";
+            request.entry_filename  = "";
+            request.given_url       = "";
+            request.option_filename = "";
+            request.option_url      = "";
+            request.option_language = "c++";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == "");
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == request.option_language);
+            assert(code_analysis(request) == true);
+            
+        }
+        //test if the langeuage is not given if it uses get_language_from_filename() function to get the language
+       {
+            analysis_request request;
+            request.given_filename  = "";
+            request.entry_filename  = "";
+            request.given_url       = "";
+            request.option_filename = "main.cpp";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == request.option_filename);
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == get_language_from_filename(filename));
+            assert(code_analysis(request) == true);
+            
+        }
+    
+        //test if the given_filename is from standard input and entry_filename is a non source code archive if it uses the option_filename 
+    
+        {
+            analysis_request request;
+            request.given_filename  = "-";
+            request.entry_filename  = "data";
+            request.given_url       = "";
+            request.option_filename = "main.cpp";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == request.option_filename);
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == get_language_from_filename(filename));
+            assert(code_analysis(request) == true);
+    
+        } 
+    
+        //test if the given_filename is from standard input and entry_filename is given if return  entry_filename 
+        {
+            analysis_request request;
+            request.given_filename  = "-";
+            request.entry_filename  = "main.cpp";
+            request.given_url       = "";
+            request.option_filename = "";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == request.entry_filename);
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == get_language_from_filename(filename));
+            assert(code_analysis(request) == true);
+            
+    
+        }
+        //test if the given_filename is from standard input, entry_filename is "data" and option_filename is blank then retruns black.
+        {
+            analysis_request request;
+            request.given_filename  = "-";
+            request.entry_filename  = "data";
+            request.given_url       = "";
+            request.option_filename = "";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == "");
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == "");
+            assert(code_analysis(request) == false);
+           
+        }
+    
+    
+        //test If the file extension is used to determine the language, and there is no mapping for that language, output the error message 
+        {
+    
+           analysis_request request;
+            request.given_filename  = "";
+            request.entry_filename  = "";
+            request.given_url       = "";
+            request.option_filename = "";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == "");
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == "");
+            assert(code_analysis(request) == false);
+        }
+    
+        //test When the input is from standard input and a language cannot be determined, output the error message
+        {
+    
+           analysis_request request;
+            request.given_filename  = "-";
+            request.entry_filename  = "";
+            request.given_url       = "";
+            request.option_filename = "";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == "");
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == "");
+            assert(code_analysis(request) == false);
+        }	
+    
+        //test if valid filename to return true
+        {
+           analysis_request request;
+            request.given_filename  = "";
+            request.entry_filename  = "main.cpp";
+            request.given_url       = "";
+            request.option_filename = "";
+            request.option_url      = "";
+            request.option_language = "";
+    
+            auto filename = analysis_filename(request);
+            assert(filename == request.entry_filename);
+            assert(analysis_url(request) == "");
+            assert(analysis_language(request, filename) == "C++");
+            assert(code_analysis(request) == true);
+        }
+        
+        return 0;
+    }
 
 ## Literal Values used in Testing
 % srcml code\_analysis_t.cpp --xpath="//src:literal" | srcml | tr '\0' '\n' |grep '"' | sort -u | tr '\n' ','
@@ -215,6 +409,7 @@ sed: RE error: illegal byte sequence
 % srcml code_analysis.cpp --xpath="//src:function[src:name='code_analysis']//src:expr[contains(., 'cerr')]//src:literal" | srcml | tr '\0'  '\n'
 
 
+
 ## Commits
 
 ### Commit 4f5fc7
@@ -223,7 +418,10 @@ sed: RE error: illegal byte sequence
 
     g++ -std=c++11 -c code_analysis_t.cpp
     g++ -std=c++11 -c code_analysis.cpp
+    g++ -std=c++11 -c get_language_from_filename.cpp
     g++ code_analysis_t.o code_analysis.o get_language_from_filename.o -o code_analysis_t
+    g++ -std=c++11 -c get_language_from_filename_t.cpp
+    g++ get_language_from_filename_t.o get_language_from_filename.o -o get_language_from_filename_t
 
 % git show
 
@@ -244,11 +442,13 @@ sed: RE error: illegal byte sequence
      
        Implementation of analysis requests
 
+
 ### Commit a6e148
 % git checkout -q a6e148  
 % make  
 
     g++ -std=c++11 -c code_analysis_t.cpp
+    g++ -std=c++11 -c code_analysis.cpp
     g++ code_analysis_t.o code_analysis.o get_language_from_filename.o -o code_analysis_t
 
 % git show
@@ -314,12 +514,12 @@ sed: RE error: illegal byte sequence
     +
     +
 
+
 ### Commit 3aed6a
 % git checkout -q 3aed6a  
 % make  
 
-    g++ -std=c++11 -c code_analysis.cpp
-    g++ code_analysis_t.o code_analysis.o get_language_from_filename.o -o code_analysis_t
+    make: Nothing to be done for `all'.
 
 % git show
 
@@ -370,11 +570,13 @@ sed: RE error: illegal byte sequence
      }
      
 
+
 ### Commit f69bfa
 % git checkout -q f69bfa  
 % make  
 
     g++ -std=c++11 -c code_analysis_t.cpp
+    g++ -std=c++11 -c code_analysis.cpp
     g++ code_analysis_t.o code_analysis.o get_language_from_filename.o -o code_analysis_t
 
 % git show
@@ -429,12 +631,12 @@ sed: RE error: illegal byte sequence
      }
      
 
+
 ### Commit 6bc7a6
 % git checkout -q 6bc7a6  
 % make  
 
-    g++ -std=c++11 -c code_analysis.cpp
-    g++ code_analysis_t.o code_analysis.o get_language_from_filename.o -o code_analysis_t
+    make: Nothing to be done for `all'.
 
 % git show
 
@@ -513,11 +715,13 @@ sed: RE error: illegal byte sequence
      }
      
 
+
 ### Commit 38c938
 % git checkout -q 38c938  
 % make  
 
     g++ -std=c++11 -c code_analysis_t.cpp
+    g++ -std=c++11 -c code_analysis.cpp
     g++ code_analysis_t.o code_analysis.o get_language_from_filename.o -o code_analysis_t
 
 % git show
@@ -578,12 +782,12 @@ sed: RE error: illegal byte sequence
      }
      
 
+
 ### Commit 881ba1
 % git checkout -q 881ba1  
 % make  
 
-    g++ -std=c++11 -c code_analysis.cpp
-    g++ code_analysis_t.o code_analysis.o get_language_from_filename.o -o code_analysis_t
+    make: Nothing to be done for `all'.
 
 % git show
 
@@ -643,6 +847,7 @@ sed: RE error: illegal byte sequence
      }
      
 
+
 ### Commit 024bd4
 % git checkout -q 024bd4  
 % make  
@@ -680,6 +885,7 @@ sed: RE error: illegal byte sequence
      
              auto filename = analysis_filename(request);
              assert(filename == "");
+
 
 ### Commit ab4811
 % git checkout -q ab4811  
@@ -803,6 +1009,7 @@ sed: RE error: illegal byte sequence
          return 0;
      }
      
+
 
 ### Commit 8f2982
 % git checkout -q 8f2982  
@@ -933,6 +1140,7 @@ sed: RE error: illegal byte sequence
      }
      
 
+
 ### Commit 77768b
 % git checkout -q 77768b  
 % make  
@@ -1010,6 +1218,7 @@ sed: RE error: illegal byte sequence
          return 0;
      }
      
+
 
 ### Commit 7878a4
 % git checkout -q 7878a4  
@@ -1165,6 +1374,7 @@ sed: RE error: illegal byte sequence
          
          return 0;
 
+
 ### Commit 87690e
 % git checkout -q 87690e  
 % make  
@@ -1232,6 +1442,7 @@ sed: RE error: illegal byte sequence
          return 0;
      }
 
+
 ### Commit 77c812
 % git checkout -q 77c812  
 % make  
@@ -1298,6 +1509,7 @@ sed: RE error: illegal byte sequence
          return 0;
      }
 
+
 ### Commit 5dd2df
 % git checkout -q 5dd2df  
 % make  
@@ -1362,6 +1574,7 @@ sed: RE error: illegal byte sequence
      {
      	analysis_request request;
      	request.given_filename = "";
+
 
 ### Commit e73710
 % git checkout -q e73710  
@@ -1658,6 +1871,7 @@ sed: RE error: illegal byte sequence
          
          return 0;
      }
+
 
 ### Commit 759472
 % git checkout -q 759472  
